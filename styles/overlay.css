@@ -1,0 +1,154 @@
+
+/* Hepburn Energy brand palette*/
+:root {
+  --logoGreen: #4BA5A2; 
+  --green: #00F4A7; 
+  --navy: #011E48;
+  --blue: #0C4CD4 ;
+}
+/* Hepburn Energy loaded brand fonts */
+@font-face {
+    font-family: 'Maison Neue';
+    src: local('Maison Neue Medium'), local('Maison Neue Medium'),
+        url('../assets/fonts/MaisonNeue-Medium.woff') format('woff'),
+        url('../assets/fonts/MaisonNeue-Medium.ttf') format('truetype');
+    font-weight: 400;
+    font-style: medium;
+}
+@font-face {
+    font-family: 'Maison Neue';
+    src: local('Maison Neue'), local('Maison Neue'),
+        url('../assets/fonts/MaisonNeue-Light.woff') format('woff'),
+        url('../assets/fonts/MaisonNeue-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: light;
+}
+@font-face {
+    font-family: 'Maison Neue';
+    src: local('Maison Neue Bold'), local('Maison Neue Bold'),
+        url('../assets/fonts/MaisonNeue-Bold.woff') format('woff'),
+        url('../assets/fonts/MaisonNeue-Bold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: bold;
+}
+@font-face {
+    font-family: 'Maison Neue Mono';
+    src: local('Maison Neue Mono'), local('Maison Neue Mono'),
+        url('../assets/fonts/MaisonNeue-MonoRegular.woff') format('woff'),
+        url('../assets/fonts/MaisonNeue-MonoRegular.ttf') format('truetype');
+    font-weight: 400;
+}
+
+/* Overlay container */
+#overlay-container{
+    font-family: 'Maison Neue Mono';
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+}
+
+.overlay-background{ 
+    width: 100vw;
+    height: 100vh;
+    grid-area: 1 / 1 / 8 / 8;
+    transition: 5s;
+}
+.overlay-background.black{ 
+    background-color: black;
+    transition: 500ms
+}
+.overlay-background.green{ 
+    background-color: var(--green)   ;
+}
+.overlay-background.navy{ 
+    background-color: var(--navy)   ;
+}
+.overlay-background.blue{ 
+    background-color: var(--blue)   ;
+}
+.overlay-background.white{ 
+    background-color: #fff;
+}
+
+#overlay-container .hidden{
+    opacity: 0;
+}
+#overlay-container .title,
+#overlay-container .narrative{
+    align-self: center;
+    transition: 1000ms;
+}
+#overlay-container .title{
+    text-align: center;
+    font-size: 8vw;
+    color: var(--green);
+    mix-blend-mode: screen;
+    font-weight: 100;
+}
+#overlay-container .narrative.exit-bottom{
+    transform: translateY(10vh);
+    opacity: 0;
+}
+#overlay-container .narrative.enter-top{
+    transform: translateY(-10vh);
+    opacity: 0;
+}
+#overlay-container .narrative div{
+    font-size: 3vw;
+    background-color: var(--navy);
+    opacity: 0.9;
+    color: var(--green); 
+    display: inline;
+    padding: 0.5rem;
+    line-height: 1.75;
+    text-align: left;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
+#overlay-container .logo-container{
+    position:   absolute;
+    top:        2.5vw;
+    left:       2.5vw;
+    width:      20vw;
+    transition: 1.5s;
+}
+#overlay-container .logo-container.he-center{
+    top:        calc(50vh - 10vh);
+    left:       calc(50vw - 30vw);
+    width:      80vw;
+}
+#overlay-container .logo-container.center{
+    top:        calc(50vh - 10vh);
+    left:       calc(50vw - 35vw);
+    width:      70vw;
+}
+#overlay-container .logo-container.he-lower{
+    top:        calc(50vh + 20vh);
+    left:       calc(50vw - 30vw);
+    width:      80vw;
+}
+#overlay-container .logo-container.lower{
+    top:        calc(50vh + 20vh);
+    left:       calc(50vw - 35vw);
+    width:      70vw;
+}
+#overlay-container .logo-container.top{
+    top:        7.5vh;
+    left:       calc(50vw - 25vw);
+    width:      50vw;
+}
+
+.logo{
+    transition: 0.5s;
+    fill: #fff; 
+}
+.top .logo{
+    /* fill: var(--green);  */
+}
