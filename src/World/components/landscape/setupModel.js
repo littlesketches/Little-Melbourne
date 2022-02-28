@@ -1,10 +1,23 @@
-import { Group, Color, MeshBasicMaterial, MeshToonMaterial,  MeshStandardMaterial, Vector3, Ray, Raycaster } from 'https://unpkg.com/three@0.127.0/build/three.module.js';
+import { Group, Color, MeshBasicMaterial, MeshNormalMaterial, MeshToonMaterial,  MeshStandardMaterial, Vector3 } from 'https://unpkg.com/three@0.127.0/build/three.module.js';
+
+
+const materials = { 
+  normal: new MeshNormalMaterial({
+    flatShading: true
+    // wireframe: true
+  }),
+  basic: new MeshBasicMaterial({
+    color: 0xffff00,
+    wireframe: true
+  }),
+}
 
 function setupModel(data) {
   const model = new Group()
   model.name = 'Model group'
   const children = [...data.scene.children]
 
+console.log(materials.MeshNormalMaterial)
 console.log(children)
 console.log(children.map(d => d.name))
   /// CONFIGURE AND ADD ALL OBJECTS 
@@ -12,8 +25,14 @@ console.log(children.map(d => d.name))
   for (const child of children){
 
     if(child.type === 'Group' ){
-      for (const mesh of child.children){
-        console.log(mesh.name)
+
+      if(child.name === 'buildings'){
+        for (const mesh of child.children){
+          mesh.material = materials.normal
+          console.log(mesh.name)
+          console.log(mesh)
+
+        }
       }
     }
 
@@ -23,7 +42,7 @@ console.log(children.map(d => d.name))
 
 
     if(child.name === 'buildings'){
-      // console.log(child)
+      console.log(child)
     }
 
     if(child.type === 'Group' ){

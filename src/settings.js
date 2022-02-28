@@ -8,8 +8,8 @@ const direction = {}            // Global object for storing the animation direc
 const settings = {              // Global object for settings, references (and state)
     camera: {
         type:           'perspective',
-        pos:            { x: -120 ,  y: 80,     z: -200   }, 
-        target:         { x: 0 ,    y: 50,      z: 0   }, 
+        pos:            { x: 4000 ,  y: 500,     z: -1800   }, 
+        target:         { x: 1000 ,    y: 50,      z: 0   }, 
         perspective: {  
             fov:        35,
             near:       0.1,
@@ -29,12 +29,12 @@ const settings = {              // Global object for settings, references (and s
     },
     sky: {
         turbidity:          6,
-        rayleigh:           1,
+        rayleigh:           0.2,
         mieCoefficient:     0.03,
-        mieDirectionalG:    0.7,
-        elevation:          25,
-        azimuth:            305,
-        exposure:           0.75
+        mieDirectionalG:    0.25,
+        elevation:          8,
+        azimuth:            80,
+        exposure:           0.05
     },
     fog: {
         color:              'rgb(30, 30, 30)',
