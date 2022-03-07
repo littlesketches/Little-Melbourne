@@ -28,17 +28,17 @@ const settings = {              // Global object for settings, references (and s
         },
         directionalLight: {
             color:          '#FFFFFF',
-            intensity:      2.0
+            intensity:      10
         }
     },
     sky: {
-        turbidity:          6,
-        rayleigh:           0.2,
+        turbidity:          1,
+        rayleigh:           0.1,
         mieCoefficient:     0.03,
         mieDirectionalG:    0.6,
-        elevation:          10,
-        azimuth:            80,
-        exposure:           0.5
+        elevation:          5,
+        azimuth:            270,
+        exposure:           0.35
     },
     fog: {
         color:              'rgb(115, 38, 70)',
@@ -58,7 +58,7 @@ const settings = {              // Global object for settings, references (and s
             buildings:      true,
             roads:          true,
             footpaths:      true,
-            cyclePaths:     true
+            bikePaths:      true
         },
         text: {
             visible:        true

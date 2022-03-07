@@ -1,7 +1,7 @@
 import { gsap } from "https://unpkg.com/gsap@3.8.0/src/gsap-core.js";
 import { Vector3, CatmullRomCurve3, BufferGeometry,  LineBasicMaterial, Line, SphereBufferGeometry, MeshBasicMaterial, Mesh, Sphere } from 'https://unpkg.com/three@0.127.0/build/three.module.js';
 import { world, direction, settings } from '../settings.js'
-export { addKeyboardEvents }
+export { addKeyboardEvents, addModelGUIEvents }
 
 //////////////////////////////////////////////////
 ///         Module for                         ///
@@ -681,4 +681,38 @@ function addKeyboardEvents(){
                 break
         }
     });
+};
+
+
+
+function addModelGUIEvents(gui){
+    console.log(world.elements)
+    const sceneFolder = gui.__folders.Scene
+    const buildingsDebug ={
+        buildings: true,
+        roads: true,
+        footpaths: true,
+        bikePaths: true,
+    }
+    sceneFolder.add(buildingsDebug, 'buildings').name('Show buildings')
+        .onChange( () => { direction.methods.toggleBuildings() })
+
+    sceneFolder.add(buildingsDebug, 'roads').name('Show roads')
+        .onChange( () => { 
+            direction.methods.togglePath(world.elements.roads, settings.elements.landscape.roads)
+            settings.elements.landscape.roads = ! settings.elements.landscape.roads
+        })
+
+    sceneFolder.add(buildingsDebug, 'footpaths').name('Show footpaths')
+        .onChange( () => { 
+            direction.methods.togglePath(world.elements.footpaths, settings.elements.landscape.footpaths)
+            settings.elements.landscape.footpaths = ! settings.elements.landscape.footpaths
+        })
+
+    sceneFolder.add(buildingsDebug, 'footpaths').name('Show bike paths')
+        .onChange( () => { 
+            direction.methods.togglePath(world.elements['bike-paths'], settings.elements.landscape.bikePaths)
+            settings.elements.landscape.bikePaths = ! settings.elements.landscape.bikePaths
+        })
+
 };

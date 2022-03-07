@@ -120,10 +120,11 @@ function setupModel(data) {
              switch(child.name){
               case 'roads': 
                 child.material = materials.matcap['glass-black']
+                // child.material = materials.matcap['metallic-purple']
                 break
 
               case 'footpaths': 
-                child.material = materials.matcap['matte-green']
+                child.material = materials.normal
                 break
 
               case 'bike-paths': 

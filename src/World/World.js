@@ -21,7 +21,7 @@ import { createPhysicsWorld }    from './components/physicsWorld.js';
 import { Resizer }               from './systems/Resizer.js';
 import { Loop }                  from './systems/Loop.js';
 
-import { addKeyboardEvents }     from './components/interaction.js';
+import { addKeyboardEvents, addModelGUIEvents}     from './components/interaction.js';
 
 export { World };
 
@@ -80,10 +80,12 @@ class World {
     // const { animGaleBlades, animGustoBlades, animFlock} = await createSceneAnimations(world.datGUI);
     // world.loop.updatables.push( animFlock, animGaleBlades, animGustoBlades);
     // for (const bird of flock.children) { world.loop.updatables.push(bird) }  
+
     // Add shader updatables
     world.loop.shaderUpdatables.push(firefliesMaterial)
 
     // Add event listeners
+    addModelGUIEvents(world.datGUI)
     addKeyboardEvents()
   };
 
