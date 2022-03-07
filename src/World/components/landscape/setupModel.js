@@ -92,27 +92,21 @@ function setupModel(data) {
             case 'ground-plane':  // Non-visible plane Used for physics 
               child.material.transparent = true
               child.material.opacity = 0
-
               break
+
             case 'ground-body':
               child.receiveShadow = true
-              // child.material.depthWrite = false
               child.material.color.set(settings.palette.grass)
-
-              // child.material.metalness =0.5
               child.material.roughness = 0.5
               break
 
             case 'water-body': 
-              // child.material.depthWrite = false
-              // child.material.flatShading = true
               child.material.metalness = 1
               child.material.emissive.set(settings.palette.water)
               child.material.emissiveIntensity = 0.25 
               break
             
             case 'soil-body':
-              // child.material.depthWrite = false
               child.receiveShadow = true
               break
 
@@ -123,27 +117,20 @@ function setupModel(data) {
               child.position.set(0, pathYScale * 2, 0)
               child.scale.set(1, pathYScale, 1)
 
-
              switch(child.name){
               case 'roads': 
-                child.material = materials.normal
-              child.material = materials.matcap['glass-black']
+                child.material = materials.matcap['glass-black']
                 break
 
               case 'footpaths': 
-console.log(materials.matcap)
-              child.material = materials.matcap['matte-green']
-                  console.log('Footpaths only??')
+                child.material = materials.matcap['matte-green']
                 break
 
               case 'bike-paths': 
-              child.material = materials.normal
+                child.material = materials.normal
                 break 
               }
-
               break
-
-
 
             default: 
               console.log('Unknown mesh: ', child)
