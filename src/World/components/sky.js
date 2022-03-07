@@ -1,14 +1,19 @@
 import { Sky } from 'https://unpkg.com/three@0.127.0/examples/jsm/objects/Sky.js';
 import { Vector3, MathUtils } from 'https://unpkg.com/three@0.127.0/build/three.module.js';
+import { settings, world } from '../settings.js'
+export { createSky };
 
-let sky, sun;
+///////////////////////////////////////////////////////////
+/// INIT AND CREATE THE THREE JS SKY SHADER WITH GUI    ///
+///////////////////////////////////////////////////////////
 
 function createSky(renderer, scene, camera, gui) {
     // Add Sky (minor adaptation from  https://threejs.org/examples/webgl_shaders_sky.html)
-    sky = new Sky();
+    const sky = new Sky();
     sky.scale.setScalar( 450000 );
     sky.rotation.y = Math.PI
-    sun = new Vector3();
+
+    const sun = new Vector3();
 
     /// GUI Default settings  
     function guiChanged() {
@@ -26,10 +31,10 @@ function createSky(renderer, scene, camera, gui) {
       renderer.toneMappingExposure = settings.sky.exposure;
 
       // Control the directional light position
-      const radius = Math.cos(MathUtils.degToRad(settings.sky.elevation)) * 200
-      settings.elements.lights.directionalLight.position.x = Math.sin(MathUtils.degToRad(settings.sky.azimuth  - 180)) * radius
-      settings.elements.lights.directionalLight.position.z = Math.cos(MathUtils.degToRad(settings.sky.azimuth - 180)) * radius
-      settings.elements.lights.directionalLight.position.y = settings.sky.elevation * 200 /5
+      const radius = Math.cos(MathUtils.degToRad(settings.sky.elevation)) * 5500
+      world.elements.lights.directionalLight.position.x = Math.sin(MathUtils.degToRad(settings.sky.azimuth  - 180)) * radius
+      world.elements.lights.directionalLight.position.z = Math.cos(MathUtils.degToRad(settings.sky.azimuth - 180)) * radius
+      world.elements.lights.directionalLight.position.y = settings.sky.elevation * 400 /5
       // Re-render
       renderer.render( scene, camera );
     }
@@ -47,7 +52,4 @@ function createSky(renderer, scene, camera, gui) {
     guiChanged();
 
     return sky
-  }
-
-
-export { createSky };
+};

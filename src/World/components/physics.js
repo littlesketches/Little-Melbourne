@@ -1,9 +1,13 @@
 import { Group, Mesh, SphereGeometry, PlaneGeometry, BoxGeometry, SphereBufferGeometry, CylinderGeometry, BufferGeometry,  MeshBasicMaterial, MeshStandardMaterial, Vector3} from 'https://unpkg.com/three@0.127.0/build/three.module.js';
 import { bodyToMesh } from './threeCannonUtils.js'
 import * as CANNON from  'https://cdn.jsdelivr.net/npm/cannon-es@0.18.0/dist/cannon-es.js'
+import { settings, heightfield } from '../settings.js'
+export { addPhysics };
 
+/////////////////////////////////////////////////////////////////
+/// SETUP THE CANNON JS PHYSICS FOR THE SCENE                 ///
+/////////////////////////////////////////////////////////////////
 
-// Function to add physics components
 function addPhysics(world, scene) {
   const physicsUpdatables = {}
 
@@ -15,14 +19,14 @@ function addPhysics(world, scene) {
     settings.physics.material.default ,
     {
       friction:       0.2,
-      restitution:    0.9
+      restitution:    0
     }
   )
   settings.physics.contactMaterial.defaultToLetter = new CANNON.ContactMaterial(
     settings.physics.material.letter ,
     settings.physics.material.default ,
     {
-      friction:      1,
+      friction:      10,
       restitution:   0
     }
   )
@@ -103,11 +107,8 @@ function addPhysics(world, scene) {
       // )
       // world.addBody(floorBody)
 
-
   return physicsUpdatables
-}
+};
 
-
-export { addPhysics };
 
 

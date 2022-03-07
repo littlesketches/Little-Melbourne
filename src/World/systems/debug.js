@@ -1,10 +1,16 @@
 import { GUI } from 'https://unpkg.com/three@0.127.0/examples/jsm/libs/dat.gui.module.js';
 import Stats from 'https://unpkg.com/three@0.127.0/examples/jsm/libs/stats.module'
+import { settings, world } from '../settings.js'
+export { createDatGUI };
+
+///////////////////////////////////////////////////////////////
+/// INIT AND CREATE A DEBUG PANE WITH EMBEDDED RENDER STATS /// 
+///////////////////////////////////////////////////////////////
 
 function createDatGUI() {
 
   // Dat GUI and main folders
-  const gui = new GUI({name: 'Little Hepburn Energy'});
+  const gui = new GUI({name: 'Little Melbourne'});
   settings.elements.datGUIFolders.perfFolder = gui.addFolder("Scene");
   settings.elements.datGUIFolders.envFolder =  gui.addFolder("Environment controls")
   settings.elements.datGUIFolders.particlesFolder =  gui.addFolder("Particle systems")
@@ -33,20 +39,17 @@ function createDatGUI() {
     directionalLightFolder = lightFolder.addFolder('Directional light (sun)'),
     hemiLightFolder = lightFolder.addFolder('Ambient (hemisphere) light')
 
-  directionalLightFolder.add(settings.elements.lights.directionalLight, 'intensity', 0, 50, 0.05).name('Intensity')
-    .onChange(() => settings.lights.directionalLight.intensity = settings.elements.lights.directionalLight.intensity)
+  directionalLightFolder.add(world.elements.lights.directionalLight, 'intensity', 0, 50, 0.05).name('Intensity')
+    .onChange(() => settings.lights.directionalLight.intensity = world.elements.lights.directionalLight.intensity)
   directionalLightFolder.addColor(settings.lights.directionalLight, 'color').name('Colour')
-    .onChange(() => settings.elements.lights.directionalLight.color.set(settings.lights.directionalLight.color) )
+    .onChange(() => world.elements.lights.directionalLight.color.set(world.lights.directionalLight.color) )
 
-  hemiLightFolder.add(settings.elements.lights.ambientLight, 'intensity', 0, 20, 0.05).name('Intensity')
-    .onChange(() => settings.lights.ambientLight.intensity = settings.elements.lights.ambientLight.intensity)
+  hemiLightFolder.add(world.elements.lights.ambientLight, 'intensity', 0, 20, 0.05).name('Intensity')
+    .onChange(() => settings.lights.ambientLight.intensity = world.elements.lights.ambientLight.intensity)
   hemiLightFolder.addColor(settings.lights.ambientLight, 'sky').name('Sky colour')
-    .onChange(() => settings.elements.lights.ambientLight.color.set(settings.lights.ambientLight.sky) )
+    .onChange(() => world.elements.lights.ambientLight.color.set(settings.lights.ambientLight.sky) )
   hemiLightFolder.addColor(settings.lights.ambientLight, 'ground').name('Ground colour')
-    .onChange(() => settings.elements.lights.ambientLight.groundColor.set(settings.lights.ambientLight.ground) )
-
+    .onChange(() => world.elements.lights.ambientLight.groundColor.set(settings.lights.ambientLight.ground) )
 
   return gui;
-}
-
-export { createDatGUI };
+};

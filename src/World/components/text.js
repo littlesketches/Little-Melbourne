@@ -1,15 +1,20 @@
-import { FontLoader, TextBufferGeometry, MeshNormalMaterial, MeshBasicMaterial, Mesh, Group, BoxGeometry, Vector3, Box3, Quaternion } from 'https://unpkg.com/three@0.127.0/build/three.module.js';
+import { FontLoader, TextBufferGeometry, MeshStandardMaterial, MeshNormalMaterial, MeshBasicMaterial, Mesh, Group, BoxGeometry, Vector3, Box3, Quaternion } from 'https://unpkg.com/three@0.127.0/build/three.module.js';
 import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.18.0/dist/cannon-es.js'
+import { settings, world } from '../settings.js'
+export { addLandscapeText };
+
+///////////////////////////////////////////////////////////
+/// CREATE THE LANDSCAPE TEXT WITH PHYSICS              ///
+///////////////////////////////////////////////////////////
 
 let landscapeText = {}            // Object of   
+
 async function addLandscapeText(scene, physicsWorld, physicsUpdatables) {
   const wpVector = new Vector3(),
     wpQuaternion = new Quaternion();
   const fontLoader = new FontLoader()
   fontLoader.load(
-    // './assets/fonts/helvetiker_regular.typeface.json',
-    // './assets/fonts/MaisonNeue-MonoRegular.json',
-    './assets/fonts/MaisonNeue-Medium.json',
+    './assets/fonts/helvetiker_regular.typeface.json',
     async (font) => {
       await renderText(font)
       return landscapeText
@@ -18,32 +23,45 @@ async function addLandscapeText(scene, physicsWorld, physicsUpdatables) {
 
   async function renderText(font){
     const textMaterial = new MeshNormalMaterial()     // Material used for all text 3D text
+      // textMaterial.emissive.set('#55ff00')
+      // textMaterial.emissiveIntensity = 0.75
+      // textMaterial.castShadow = true
+
     const textObjects = [
       {     
-        text:           'LITTLE HEPBURN ENERGY',             // Full text string
-        position:       {x: 150,  y: 1, z: -235},
-        rotation:       {x: 0,   y: Math.PI * 1.0 , z: 0},
-        prop:           'mainTitle',                 // Reference to text properties object
+        text:           'LITTLE',             // Full text string
+        position:       {x: 1200,  y: 300, z: -3200},
+        rotation:       {x: 0,   y: Math.PI * 2.0 , z: 0},
+        prop:           'mainTitle-little',                 // Reference to text properties object
       },
+      {     
+        text:           'MELBOURNE',             // Full text string
+        position:       {x: 4000,  y: 300, z: -2500},
+        rotation:       {x: 0,   y: Math.PI * -0.5 , z: 0},
+        prop:           'mainTitle-melbourne',                 // Reference to text properties object
+      },
+
     ]
 
     const textProperties = {
-      mainTitle: {
+      default: {
         center:         true,
         split:          true,
-        letterSpacing:  2,      
+        letterSpacing:  80,      
         // Three JS text properties
-        size:           20,
-        height:         5,
+        size:           500,
+        depth:          200,
         curveSegments:  24,
         bevelEnabled:   true,
       }
     }
 
     for( const obj of textObjects){
+      const textProps = textProperties[obj.prop] ? textProperties[obj.prop] : textProperties.default
+
       // Setup group for text characters (and split if set to true)
       const textGroup = new Group(), 
-        charsToRender = textProperties[obj.prop].split ? obj.text.split("") : [obj.text] , 
+        charsToRender = textProps.split ? obj.text.split("") : [obj.text] , 
         charLength = charsToRender.length
 
       // Add text geometry (by split text array) 
@@ -54,17 +72,17 @@ async function addLandscapeText(scene, physicsWorld, physicsUpdatables) {
             charsToRender[i], 
             {
                 font,
-                size:           textProperties[obj.prop].size,
-                height:         textProperties[obj.prop].size * 0.25,
-                curveSegments:  textProperties[obj.prop].curveSegments,
-                bevelEnabled:   textProperties[obj.prop].bevelEnabled,
-                bevelThickness: textProperties[obj.prop].size * 0.025,
-                bevelSize:      textProperties[obj.prop].size * 0.025,
+                size:           textProps.size,
+                height:         textProps.depth,
+                curveSegments:  textProps.curveSegments,
+                bevelEnabled:   textProps.bevelEnabled,
+                bevelThickness: textProps.size * 0.025,
+                bevelSize:      textProps.size * 0.025,
                 bevelOffset:    0,
                 bevelSegments:  16
             } 
           )
-          if(textProperties[obj.prop].center) textGeometry.center()
+          if(textProps.center) textGeometry.center()
 
           const text = new Mesh(textGeometry, textMaterial),
             textBbox = new Box3().setFromObject(text),
@@ -73,14 +91,14 @@ async function addLandscapeText(scene, physicsWorld, physicsUpdatables) {
           letterWidths.push(textWidth)  // Store all letter widths
 
           if(i > 0) { // Increment the letter width
-            startX += (letterWidths[i-1] + textWidth) * 0.5 + textProperties[obj.prop].letterSpacing
+            startX += (letterWidths[i-1] + textWidth) * 0.5 + textProps.letterSpacing
           }
 
           text.position.x = startX
           textGroup.add(text)
 
         } else { // Add a space
-          startX += textProperties[obj.prop].size
+          startX += textProps.size
           letterWidths.push(5)  // Add a letter width for the space
         }
       }
@@ -124,10 +142,12 @@ async function addLandscapeText(scene, physicsWorld, physicsUpdatables) {
         }
       }
       // Add text group to scene and create object reference
+
+      // world.elements.text
       scene.add(textGroupToAdd)
       settings.elements.text[obj.prop] = textGroupToAdd
     }
   }
-}
+};
 
-export { addLandscapeText };
+

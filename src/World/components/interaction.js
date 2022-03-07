@@ -1,15 +1,16 @@
 import { gsap } from "https://unpkg.com/gsap@3.8.0/src/gsap-core.js";
 import { Vector3, CatmullRomCurve3, BufferGeometry,  LineBasicMaterial, Line, SphereBufferGeometry, MeshBasicMaterial, Mesh, Sphere } from 'https://unpkg.com/three@0.127.0/build/three.module.js';
+import { world, direction, settings } from '../settings.js'
+export { addKeyboardEvents }
 
-
-/////////////////////////////////////////
-///         Module for                ///
-/// HEPBURN ENERGY STORY ANIMATION    ///
-/// --------------------------------- ///
-/// GSAP powered camera and overlay   ///
-/// animation sequence, with a few    ///
-/// basic keyboard options to play    ///
-///                                   ///
+//////////////////////////////////////////////////
+///         Module for                         ///
+/// "STORIES FROM THE CITY..."" ANIMATION      ///
+/// ------------------------------------------ ///
+/// GSAP powered camera and overlay animation  ///
+/// sequence, with a few basic keyboard        ///
+/// options to play                             ///
+///                                             ///
 /////////////////////////////////////////
 
 
@@ -489,31 +490,6 @@ import { Vector3, CatmullRomCurve3, BufferGeometry,  LineBasicMaterial, Line, Sp
                 }
             }
         },
-        toggleSolar(duration = 3, solarArrays = settings.elements.solar.arrays, fence = settings.elements.solar.fence, station = settings.elements.solar.station){
-            const solarObjects = solarArrays.concat(fence).concat(station),
-                yOffset = settings.elements.solar.visible ? "-=3" : "+=3" 
-            for( const obj of solarObjects) {
-                gsap.to( obj.position, {
-                    duration: duration,
-                    ease: "power2.inOut",
-                    y:  yOffset
-                })
-            }
-            settings.elements.solar.visible = !settings.elements.solar.visible
-        },
-        toggleStorage(duration = 3, battery = settings.elements.storage.battery, station = settings.elements.storage.station){
-            const storageObjects = [battery].concat(station),
-                yOffset = settings.elements.storage.visible ? "-=5" : "+=5" 
-
-            for( const obj of storageObjects) {
-                gsap.to( obj.position, {
-                    duration: duration,
-                    ease: "power2.inOut",
-                    y:  yOffset
-                })
-            }
-            settings.elements.storage.visible = !settings.elements.storage.visible
-        },
         calculateCameraPath(){
             // a. Camera path and markers
             const camPathPoints = direction.camera.pathPoints.map( d =>  new Vector3(d.x, d.y, d.z)),
@@ -585,7 +561,37 @@ import { Vector3, CatmullRomCurve3, BufferGeometry,  LineBasicMaterial, Line, Sp
             })
 
             world.animation.tl.pause()
-        }
+        },
+
+        toggleBuildings(duration = 3, buildingEls = world.elements.buildings){
+
+            const buildingObjects = Object.values(buildingEls),
+                buildingsVisible = settings.elements.landscape.buildings, 
+                yScale = buildingsVisible ? "0" : "1", 
+                yOffset = buildingsVisible ? "-100" : "0"
+
+            for( const obj of buildingObjects) {
+                gsap.to( obj.position, {
+                    duration: duration,
+                    ease: "power2.inOut",
+                    y:  yOffset
+                })
+                gsap.to( obj.scale, {
+                    duration: duration,
+                    ease: "power2.inOut",
+                    y:  yScale
+                })
+            }
+            settings.elements.landscape.buildings = !settings.elements.landscape.buildings
+        },
+        togglePath( el, visibleState, duration = 1.5){
+            const yOffset = visibleState ? "-=60" : "+=60"
+            gsap.to( el.position, {
+                duration: duration,
+                ease: "power2.inOut",
+                y:  yOffset
+            })
+        },
     }
 
 // 1. Build the animation
@@ -593,72 +599,86 @@ direction.methods.calculateCameraPath()
 // direction.methods.buildAnimation()
 
 // 2. Add Keyboard event listeners for controls in 'animation mode'
-document.addEventListener("keydown", (event) => {
-    // handle keydown
-    switch (event.keyCode){
-        case 65:        // Toggle animation mode
-            if(!settings.options.animationMode){    // Build the animation and ready for play
-                for(const el of document.querySelectorAll('.he-logo')){ el.classList.add('hidden') }
-                world.datGUI.hide()
-                direction.methods.buildAnimation()
-            } else {                             // Clear the animation settings
-                world.animation.tl.clear()
-                world.datGUI.show()
-                document.querySelector('.narrative').classList.add('exit-bottom')
-                document.querySelector('.logo-container').className = 'logo-container'
-                document.querySelector('.fp-logo').classList.add('hidden') 
-                gsap.to( world.camera.position, {
-                        duration: 2,
-                        x: settings.camera.pos.x, 
-                        y: settings.camera.pos.y, 
-                        z: settings.camera.pos.z 
-                    }
-                )
-                gsap.to( world.controls.target, {
-                        duration: 2,
-                        x: settings.camera.target.x, 
-                        y: settings.camera.target.y, 
-                        z: settings.camera.target.z 
-                    }
-                )
-                // Reset environment
-                gsap.to(world.sky.material.uniforms.turbidity, { duration: 2, value: settings.sky.turbidity })
-                gsap.to(world.sky.material.uniforms.rayleigh, { duration: 2, value: settings.sky.rayleigh  })
-                gsap.to(world.sky.material.uniforms.mieCoefficient, { duration: 2, value: settings.sky.mieCoefficient  })
-                gsap.to(world.sky.material.uniforms.mieDirectionalG, { duration: 2, value: settings.sky.mieDirectionalG  })
-                gsap.to(world.renderer, {duration: 2,toneMappingExposure: settings.sky.exposure  })
-                gsap.to(world.scene.fog, {duration: 2, density: settings.fog.density  })
-                // Reset solar and battery
-                settings.elements.solar.visible = false
-                settings.elements.storage.visible = false
-                direction.methods.toggleSolar()
-                direction.methods.toggleStorage()
-            }
+function addKeyboardEvents(){
 
-            settings.options.animationMode = !settings.options.animationMode
-            break
-        case 32:        // Space to start / pause animation
-            if(settings.options.animationMode){
-                if(world.animation.tl.isActive()) {
-                    world.animation.tl.pause()
-                } else{
-                    world.animation.tl.play() 
+    document.addEventListener("keydown", (event) => {
+        // handle keydown
+        switch (event.keyCode){
+            case 65:        // Toggle animation mode
+                if(!settings.options.animationMode){    // Build the animation and ready for play
+                    for(const el of document.querySelectorAll('.he-logo')){ el.classList.add('hidden') }
+                    world.datGUI.hide()
+                    direction.methods.buildAnimation()
+                } else {                             // Clear the animation settings
+                    world.animation.tl.clear()
+                    world.datGUI.show()
+                    document.querySelector('.narrative').classList.add('exit-bottom')
+                    document.querySelector('.logo-container').className = 'logo-container'
+                    document.querySelector('.fp-logo').classList.add('hidden') 
+                    gsap.to( world.camera.position, {
+                            duration: 2,
+                            x: settings.camera.pos.x, 
+                            y: settings.camera.pos.y, 
+                            z: settings.camera.pos.z 
+                        }
+                    )
+                    gsap.to( world.controls.target, {
+                            duration: 2,
+                            x: settings.camera.target.x, 
+                            y: settings.camera.target.y, 
+                            z: settings.camera.target.z 
+                        }
+                    )
+                    // Reset environment
+                    gsap.to(world.sky.material.uniforms.turbidity, { duration: 2, value: settings.sky.turbidity })
+                    gsap.to(world.sky.material.uniforms.rayleigh, { duration: 2, value: settings.sky.rayleigh  })
+                    gsap.to(world.sky.material.uniforms.mieCoefficient, { duration: 2, value: settings.sky.mieCoefficient  })
+                    gsap.to(world.sky.material.uniforms.mieDirectionalG, { duration: 2, value: settings.sky.mieDirectionalG  })
+                    gsap.to(world.renderer, {duration: 2,toneMappingExposure: settings.sky.exposure  })
+                    gsap.to(world.scene.fog, {duration: 2, density: settings.fog.density  })
+                    // Reset solar and battery
+                    settings.elements.solar.visible = false
+                    settings.elements.storage.visible = false
+                    direction.methods.toggleSolar()
+                    direction.methods.toggleStorage()
                 }
-            }
-            break
-        case 16:        // Shift to restart animation
-            if(settings.options.animationMode){
-                world.animation.tl.restart() 
-            }
-            break
-        case 79:    // "o" to toggle orbit controls
-            world.controls.enabled = !world.controls.enabled
-            break
-        case 83:    // "s"
-            direction.methods.toggleSolar()
-            break
-        case 66:    // "b"
-            direction.methods.toggleStorage()
-            break
-    }
-});
+
+                settings.options.animationMode = !settings.options.animationMode
+                break
+            case 32:        // Space to start / pause animation
+                if(settings.options.animationMode){
+                    if(world.animation.tl.isActive()) {
+                        world.animation.tl.pause()
+                    } else{
+                        world.animation.tl.play() 
+                    }
+                }
+                break
+
+            case 16:        // Shift to restart animation
+                if(settings.options.animationMode){
+                    world.animation.tl.restart() 
+                }
+                break
+            case 79:    // "o" to toggle orbit controls
+                world.controls.enabled = !world.controls.enabled
+                break
+
+            case 70:    // "f"
+                console.log('Toggling footpaths from: ', settings.elements.landscape.footpaths)
+                direction.methods.togglePath(world.elements.footpaths, settings.elements.landscape.footpaths)
+                settings.elements.landscape.footpaths = ! settings.elements.landscape.footpaths
+                break
+
+            case 82:    // "r"
+                console.log('Toggling roads from: ', settings.elements.landscape.roads)
+                direction.methods.togglePath(world.elements.roads, settings.elements.landscape.roads)
+                settings.elements.landscape.roads = ! settings.elements.landscape.roads
+                break
+            case 66:    // "b"
+                console.log('Toggling buildings from: ', settings.elements.landscape.buildings)
+                direction.methods.toggleBuildings()
+                break
+        }
+    });
+};

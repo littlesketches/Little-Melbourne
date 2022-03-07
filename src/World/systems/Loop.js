@@ -1,5 +1,11 @@
 import { Clock } from 'https://unpkg.com/three@0.127.0/build/three.module.js';
 import { World } from '../World.js';
+import { settings } from '../settings.js'
+export { Loop };
+
+///////////////////////////////////////////////////////////////
+/// CREATE ANIMATION LOOP CLASS CONSTRUCTOR                 ///
+///////////////////////////////////////////////////////////////
 
 const clock = new Clock();
 let time = Date.now(), oldElapsedTime = 0
@@ -57,6 +63,4 @@ class Loop {
     // 3. Update the monitoring
     settings.gui.stats.update()
   }
-}
-
-export { Loop };
+};
